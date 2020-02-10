@@ -1,0 +1,11 @@
+.add_form .add_form_input {
+  padding-left: 15px;
+  margin-right: 10px;
+  width: 430px;
+  height: 25px;
+
+}
+
+.add_form .btn_add {
+  height: 31px;
+}
