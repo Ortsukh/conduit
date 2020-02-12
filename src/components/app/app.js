@@ -16,6 +16,7 @@ class App extends Component {
       label,
       important: false,
       done: false,
+      hidden: false,
       id: this.maxId++
     };
   }
@@ -26,13 +27,70 @@ class App extends Component {
       this.createTodo("Make Awesome App")
     ]
   };
-  filterActive() {
+  filterActive = () => {
     this.setState(prevState => {
+      const nextState = prevState.todoData.map(item => {
+        if (item.hidden) {
+          item.hidden = false;
+        }
+        if (item.done) {
+          item.hidden = true;
+        }
+
+        return item;
+      });
+
       return {
-        todoData: prevState.todoData.filter(item => item.done === true)
+        todoData: nextState
       };
     });
-  }
+  };
+  filterAll = () => {
+    this.setState(prevState => {
+      const nextState = prevState.todoData.map(item => {
+        if (item.hidden) {
+          item.hidden = false;
+        }
+        return item;
+      });
+      return {
+        todoData: nextState
+      };
+    });
+  };
+  filterDone = () => {
+    this.setState(prevState => {
+      const nextState = prevState.todoData.map(item => {
+        if (item.hidden) {
+          item.hidden = false;
+        }
+        if (!item.done) {
+          item.hidden = true;
+        }
+        return item;
+      });
+      return {
+        todoData: nextState
+      };
+    });
+  };
+  searh = e => {
+    const value = e.target.value;
+    this.setState(prevState => {
+      const nextState = prevState.todoData.map(item => {
+        const label = item.label.toLowerCase();
+        if (!label.includes(value)) {
+          item.hidden = true;
+        } else {
+          item.hidden = false;
+        }
+        return item;
+      });
+      return {
+        todoData: nextState
+      };
+    });
+  };
   deleteItem = id => {
     this.setState(prevState => {
       return {
@@ -85,8 +143,13 @@ class App extends Component {
       <div className="todo-app">
         <AppHeader toDo={todo} done={done} />
         <div className="top-panel search-panel">
-          <SearchPanel />
-          <ItemStatusFilter onfilterActive={this.filterActive} />
+          <SearchPanel onSearch={this.searh} />
+          <ItemStatusFilter
+            onfilterActive={this.filterActive}
+            onfilterAll={this.filterAll}
+            onfilterDone={this.filterDone}
+            todos={todoData}
+          />
         </div>
 
         <TodoList

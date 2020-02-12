@@ -4,11 +4,12 @@ import "./add-form.css";
 
 class AddForm extends Component {
   state = {
-    label: "123123"
+    label: ""
   };
 
   onChange = e => {
     const value = e.target.value;
+
     this.setState({ label: value });
   };
 
@@ -19,14 +20,18 @@ class AddForm extends Component {
       <form
         className="add_form"
         onSubmit={e => {
+          if (label) {
+            e.preventDefault();
+            onAdded(label);
+            this.setState({ label: "" });
+          }
           e.preventDefault();
-          onAdded(label);
-          this.setState({ label: "" });
         }}
       >
         <input
           className="add_form_input"
           onChange={this.onChange}
+          placeholder="Add new"
           value={label}
         />
         <button className="btn_add">Add</button>
