@@ -1,165 +1,52 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import AppHeader from "../app-header";
-import SearchPanel from "../search-panel";
-import TodoList from "../todo-list";
-import ItemStatusFilter from "../item-status-filter";
-import AddForm from "../add-form";
+import HomePage from "../homePage";
+
+import EditorPage from "../pages/editorPage";
+import ProfilPage from "../pages/profilPage";
+import ArticlePage from "../pages/articlePage";
+import SignInPage from "../pages/signInPage";
+import SignUpPage from "../pages/signUpPage";
+import SettingPage from "../pages/settingPage";
+
+import SwapiService from "../../services/swapi-service";
 
 import "./app.css";
 
 class App extends Component {
-  maxId = 100;
-
-  createTodo(label) {
-    return {
-      label,
-      important: false,
-      done: false,
-      hidden: false,
-      id: this.maxId++
+  constructor(props) {
+    super(props);
+    this.state = {
+      login: false,
     };
   }
-
-  state = {
-    todoData: [
-      this.createTodo("Drink Coffee"),
-      this.createTodo("Make Awesome App")
-    ]
-  };
-  filterActive = () => {
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        if (item.hidden) {
-          item.hidden = false;
-        }
-        if (item.done) {
-          item.hidden = true;
-        }
-
-        return item;
-      });
-
-      return {
-        todoData: nextState
-      };
-    });
-  };
-  filterAll = () => {
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        if (item.hidden) {
-          item.hidden = false;
-        }
-        return item;
-      });
-      return {
-        todoData: nextState
-      };
-    });
-  };
-  filterDone = () => {
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        if (item.hidden) {
-          item.hidden = false;
-        }
-        if (!item.done) {
-          item.hidden = true;
-        }
-        return item;
-      });
-      return {
-        todoData: nextState
-      };
-    });
-  };
-  searh = e => {
-    const value = e.target.value;
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        const label = item.label.toLowerCase();
-        if (!label.includes(value)) {
-          item.hidden = true;
-        } else {
-          item.hidden = false;
-        }
-        return item;
-      });
-      return {
-        todoData: nextState
-      };
-    });
-  };
-  deleteItem = id => {
-    this.setState(prevState => {
-      return {
-        todoData: prevState.todoData.filter(item => item.id !== id)
-      };
-    });
-  };
-
-  toggleImportant = id => {
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        if (item.id === id) {
-          item.important = !item.important;
-        }
-        return item;
-      });
-      return {
-        todoData: nextState
-      };
-    });
-  };
-  toggleDone = id => {
-    this.setState(prevState => {
-      const nextState = prevState.todoData.map(item => {
-        if (item.id === id) {
-          item.done = !item.done;
-        }
-        return item;
-      });
-      return {
-        todoData: nextState
-      };
-    });
-  };
-
-  addTodo = label => {
-    this.setState(prevState => {
-      return {
-        todoData: prevState.todoData.concat(this.createTodo(label))
-      };
-    });
+  swapiService = new SwapiService();
+  getLogin = (login) => {
+    this.setState({ login: login });
   };
 
   render() {
-    const { todoData } = this.state;
-    const todo = todoData.filter(item => !item.done).length;
-    const done = todoData.length - todo;
-
     return (
-      <div className="todo-app">
-        <AppHeader toDo={todo} done={done} />
-        <div className="top-panel search-panel">
-          <SearchPanel onSearch={this.searh} />
-          <ItemStatusFilter
-            onfilterActive={this.filterActive}
-            onfilterAll={this.filterAll}
-            onfilterDone={this.filterDone}
-            todos={todoData}
-          />
-        </div>
-
-        <TodoList
-          todos={todoData}
-          onDelete={this.deleteItem}
-          onToggle={this.toggleDone}
-          onImportant={this.toggleImportant}
-        />
-        <AddForm onAdded={this.addTodo} />
-      </div>
+      <Router>
+        <AppHeader />
+        <Switch>
+          <Route path="/" component={HomePage} exact />
+          <Route path="/login">
+            <SignInPage getLogin={this.getLogin} />
+          </Route>
+          <Route path="/register">
+            <SignUpPage getLogin={this.getLogin} />
+          </Route>
+          <Route path="/editor" component={EditorPage} />
+          <Route path="/article" component={ArticlePage} />
+          <Route path="/settings">
+            <SettingPage getLogin={this.getLogin} />
+          </Route>
+          <Route path="/profile" component={ProfilPage} />
+        </Switch>
+      </Router>
     );
   }
 }

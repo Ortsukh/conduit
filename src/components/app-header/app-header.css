@@ -1,13 +1,23 @@
-.app-header {
-  align-items: flex-end;
+/* .header {
   display: flex;
+  align-items: center;
+  height: 30px;
+  width: 70%;
+  margin: 0 auto;
 }
 
-.app-header h1 {
-  flex-grow: 1;
+
+.header a {
+  text-decoration: none;
 }
 
-.app-header h2 {
-  font-size: 1.2rem;
-  color: grey;
+.header li:first-child {
+  margin-left: 70%;
+}
+
+.header li {
+  margin-right: 20px;
+} */
+.navbar-nav {
+  flex-direction: row;
 }

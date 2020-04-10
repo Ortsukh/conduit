@@ -1,0 +1,10 @@
+a {
+  cursor: pointer;
+
+}
+
+.sidebar {
+  padding: 5px 10px 10px;
+  background: #f3f3f3;
+  border-radius: 4px;
+}
